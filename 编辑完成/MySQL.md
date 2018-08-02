@@ -591,6 +591,31 @@ select u.username,g.goodsname from user u LEFT JOIN goods g ON u.id=g.uid
 
 左链接会将左表作为主表 右表为辅表 会将主表所有数据查询出来 辅表没有关联的数据使用null来占位
 
+## 用户管理
+
+## 权限管理
+
+## 远程连接
+
+test数据库的所有表对任意IP地址的user用户开放所有权限，登陆密码是1234：
+
+`grant all privileges on test.* to user@'%' identified by '1234';`
+
+删除用户权限：`revoke all on [database.table] from [user];`
+
+删除用户及权限：`drop user 用户名@权限;`
+
+刷新权限：`flush privileges;`
+
+改表法：
+
+```mysql
+mysql>update user set host = '%' where user = 'root';
+mysql>select host, user from user;
+```
+
+
+
 ## 存储过程
 
 ## 数据迁移
