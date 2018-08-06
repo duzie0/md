@@ -478,7 +478,7 @@ a = 1  b = 2  c = 3  city = nanjing  kwargs = {'job': 'waiter', 'hobby': 'music'
 
 ## Python 内置函数
 
-### 编码：
+**编码：**
 
 Python的字符串类型是`str`，在内存中以Unicode表示，一个字符对应若干个字节。如果要在网络上传输，或者保存到磁盘上，就需要把`str`变为以字节为单位的`bytes`。
 
@@ -526,7 +526,7 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 >>>x = b'ABC'
 ```
 
-### len()函数：
+**len()函数：**
 
 计算str中包含多少字符：
 
@@ -565,13 +565,13 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 4
 ```
 
-### input()函数：
+**input()函数：**
 
 input()函数会阻塞程序。
 
 input()返回的数据类型是str。
 
-### range()函数：
+**range()函数：**
 
 `range(5)` 生成整数数列0,1,2,3,4，不包括5。
 
@@ -579,11 +579,194 @@ input()返回的数据类型是str。
 
 `range(0,5,2)`0,2,4，第三个参数是步长
 
-### isinstance():
+**isinstance():** 
 
-## 切片：
+```python
+>>> isinstance('aaa',(int,str))
+True
+>>> isinstance(123,int)
+True
+>>> isinstance(123,str)
+False
+```
 
-首先，切片不是list所特有的，string也有这种功能。
+**enumerate():**
+
+```python
+>>> L
+[1, 2, 3, 4, 5]
+>>> for index,value in enumerate(L):
+...     print(index,value)
+...
+0 1
+1 2
+2 3
+3 4
+4 5
+```
+
+## Python高级功能
+
+### 切片：
+
+首先，切片不是list所特有的，tuple,string也有这种功能。
+
+```python
+>>> L = [1,2,3,4,5]
+>>> L[:]		#原列表
+[1, 2, 3, 4, 5]
+>>> L[::]		#原列表
+[1, 2, 3, 4, 5]
+>>> L[:4:2]
+[1, 3]
+>>> L[::2]
+[1, 3, 5]
+>>> L[::-1]		#-1表示截取的步长
+[5, 4, 3, 2, 1]
+>>> L[4:1:-1]	#步长为负时起至的索引要从后往前，否则切片的是空列表
+[5, 4, 3]
+>>> L[1:4:-1]
+[]
+```
+
+对于元组切片的结果还是元组，字符串切片结果还是字符串。
+
+```python
+>>> t = (1,2,3,4,5)
+>>> s = 'abcdefghijkl'
+>>> t[::-1]
+(5, 4, 3, 2, 1)
+>>> t[:2]
+(1, 2)
+>>> s[::-1]
+'lkjihgfedcba'
+>>> s[1:4] 		#不包括索引为4的值
+'bcd'
+```
+
+### 迭代：
+
+如果给定一个list或tuple，通过`for`循环来遍历这个list或tuple，这种遍历称为迭代（Iteration）。
+
+```python
+>>> from collections import Iterable
+>>> isinstance(123,Iterable)
+False
+>>> isinstance('abc',Iterable)
+True
+```
+
+迭代必须是可迭代对象。
+
+### 列表生成式：
+
+```python
+>>> L = [i for i in range(10)]
+>>> L
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> type(L)
+<class 'list'>
+```
+
+### 生成器：
+
+Python中，一边循环一边计算的机制，称为生成器：generator。
+
+**创建方式：**
+
+将列表生成式的`[]` 换成`()` 的到的即是一个生成器。
+
+```python
+>>> g = (i for i in range(10))
+>>> g
+<generator object <genexpr> at 0x000002F4CD147E08>
+>>> next(g)
+0
+>>> next(g)
+1
+.......
+>>> next(g)
+9
+>>> next(g)			#当迭代器中没有元素会抛出StopIteration
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+StopIteration
+---------------------------------------------------------------------
+>>> g = (i for i in range(10))
+>>> for i in g:
+...     print(i)
+...
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+```
+
+**使用yield关键字创建：**
+
+```python
+def fib(max):
+    n,a,b = 0,0,1
+    while n < max:
+        yield b
+        a,b = b,a+b
+        n += 1
+     return 'done'
+f = fib(5)
+for i in f:
+    print(i)
+--------------------------------------------------------
+f = fib(5)
+while True:
+    try:
+        print(next(f))
+     except StopItertion as e:
+        print('返回值',e.value)
+        break
+```
+
+输出：
+
+```python
+1
+1
+2
+3
+5
+1
+1
+2
+3
+5
+返回值 done
+```
+
+### 迭代器：
+
+可以直接作用于`for`循环的数据类型有以下几种：
+
+一类是集合数据类型，如`list`、`tuple`、`dict`、`set`、`str`等；
+
+一类是`generator`，包括生成器和带`yield`的generator function。
+
+这些可以直接作用于`for`循环的对象统称为可迭代对象：`Iterable`。
+
+可以被`next()`函数调用并不断返回下一个值的对象称为迭器：`Iterator`。
+
+使用`isinstance()`判断一个对象是否是`Iterable`对象。
+
+**小结：**
+
+1. 凡是可作用于for循环的对象都是Iterable类型；
+2. 凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
+3. 集合数据类型如list、dict、str等是Iterable但不是Iterator，不过**可以通过iter()函数获得一个Iterator对象**。
+4. Python的for循环本质上就是通过不断调用next()函数实现的
 
 ## 异常：
 
