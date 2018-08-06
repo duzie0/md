@@ -590,6 +590,29 @@ True
 False
 ```
 
+Animal >> Dog >> Husky
+
+```python
+>>>type(husky)
+<class '__main__.Husky'> 
+>>>type(dog)
+<class '__main__.Dog'>
+>>>isinstance(husky,Husky)
+True
+>>>isinstance(dog,Dog)
+True
+>>>isinstance(husky,Dog)
+True
+>>>isinstance(husky,Animal)
+True
+>>>isinstance(dog,Animal)
+True
+```
+
+总是优先使用isinstance()判断类型，可以将指定类型及其子类“一网打尽”。
+
+type只能判断出一个对象的所属类型。
+
 **enumerate():**
 
 ```python
@@ -749,6 +772,8 @@ while True:
 
 ### 迭代器：
 
+**迭代器都是可迭代对象** 
+
 可以直接作用于`for`循环的数据类型有以下几种：
 
 一类是集合数据类型，如`list`、`tuple`、`dict`、`set`、`str`等；
@@ -768,7 +793,298 @@ while True:
 3. 集合数据类型如list、dict、str等是Iterable但不是Iterator，不过**可以通过iter()函数获得一个Iterator对象**。
 4. Python的for循环本质上就是通过不断调用next()函数实现的
 
+## 函数式编程：
+
+### 高阶函数：
+
+变量可以指向函数
+
+```python
+>>> abs(-1)
+1
+>>> f = abs
+>>> f
+<built-in function abs>
+>>> f(-1)
+1
+#函数名也是变量
+>>>abs = 10
+>>>abs 
+10
+#此时abs不能再计算绝对值，它指向10
+>>> abs(-1)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not callable
+```
+
+一个函数接收另一个函数作为参数，这种函数就称之为高阶函数。
+
+#### map/reduce:
+
+##### **map:**
+
+`map()`函数接收两个参数，一个是函数，一个是`Iterable`，`map`将传入的函数依次作用到序列的每个元素，并把**结果作为新的`Iterator`返回。**
+
+```python
+>>> r = map(abs,[1,-3,4,5,-6])
+>>> r
+<map object at 0x00000226707E9CF8>
+>>> next(r)
+1
+----------------------------------------------------------
+#list()函数让它把整个序列都计算出来并返回一个list
+>>> list(r)
+[1, 3, 4, 5, 6]
+```
+
+##### reduce:
+
+`reduce`把一个函数作用在一个序列`[x1, x2, x3, ...]`上，这个函数必须接收两个参数，`reduce`把结果继续和序列的下一个元素做累积计算。
+
+```python
+>>> reduce(lambda x,y:x*10+y,[1,2,3,4])
+1234
+```
+
+两者配合实现str转化为int:
+
+```python
+>>> def str_int(s):
+...     d = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9}
+...     return d[s]
+...
+>>> def f(x,y):
+...     return x*10+y
+...
+>>> r = reduce(f,map(str_int,'1563'))
+>>> r
+1563
+```
+
+
+
+#### filter:
+
+Python内建的`filter()`函数用于过滤序列。
+
+和`map()`类似，`filter()`也接收一个函数和一个序列。和`map()`不同的是，`filter()`把传入的函数依次作用于每个元素，然后根据返回值是`True`还是`False`决定保留还是丢弃该元素。
+
+**`filter()`函数返回的也是一个`Iterator`**
+
+```python
+def nums():
+    n = 1
+    while True:
+        n += 1
+        yield n
+def div(n):
+    return lambda x:x%n>0
+def primes():
+    it = nums()
+    while True:
+        n = next(it)
+        yield n
+        it = filter(div(n),it)
+p = primes()
+for i in p:
+    if  i > 10:
+        break
+    print(i)
+```
+
+#### sorted:
+
+`sorted()`函数也是一个高阶函数，它可以接收一个`key`函数来实现自定义的排序。
+
+**key指定的函数将作用于list的每一个元素上**，并根据key函数返回的结果进行排序。
+
+要进行反向排序，不必改动key函数，可以传入第三个参数`reverse=True`
+
+**字典按值排序：** 
+
+```python
+>>> dict1 = {'a':1,'b':10,'c':3}
+>>> sorted(dict1.items(),key=lambda x:x[1],reverse=True)
+[('b', 10), ('c', 3), ('a', 1)]
+```
+
+### 返回函数，闭包：
+
+```python
+def lazy_sum(*args):
+    def sum():
+        ax = 0
+        for i in args:
+            ax += i
+        return ax
+    return sum
+---------------------------------------------------------------------------
+>>>f = lazy_sum(1,2,3)
+>>>f
+<function lazy_sum.<locals>.sum at 0x101c6ed90>
+>>>f()
+6
+```
+
+在函数`lazy_sum`中又定义了函数`sum`，并且，**内部函数`sum`可以引用外部函数`lazy_sum`的参数和局部变量，当`lazy_sum`返回函数`sum`时，相关参数和变量都保存在返回的函数中**，这种称为“闭包（Closure）”
+
+```python
+def count():
+    fs = []
+    for i in range(1,4):
+        def f():
+            return i*i
+        fs.append(f)
+    return fs
+f1,f2,f3 = count()
+print(f1(),f2(),f3())
+----------------------------------------------------------------------
+输出：
+9 9 9
+```
+
+全部都是`9`！原因就在于返回的函数**引用**了变量`i`，但它**并非立刻执行**。等到3个函数都返回时，它们所引用的变量`i`已经变成了`3`，因此最终结果为`9`。
+
+**返回函数不要引用任何循环变量，或者后续会发生变化的变量。**
+
+返回一个函数时，该函数并未执行，返回函数中**不要引用任何可能会变化的变量**。
+
+### 匿名函数：
+
+lambda
+
+```python
+def add(x,y):
+    return x+y
+sum = reduce(add,[1,2,3,4,5])
+------------------------------------
+sum = reduce(lambda x,y:x+y,[1,2,3,4,5])
+```
+
+### 装饰器：
+
+假设要增强一个函数的功能，比如，在函数调用前后自动打印日志，但又不希望修改这个函数的定义，这种在代码运行期间动态增加功能的方式，称之为“装饰器”（Decorator）
+
+```python
+from functools import  wraps
+import time
+def times(func):
+    #使用wraps装饰器的原因是：修改函数__name__属性
+    #不使用add.__name__的值为wrapper
+    #不需要编写wrapper.__name__ = func.__name__
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        s = time.time()
+        func(*args,**kwargs)
+        e = time.time()
+        result = e - s
+        print('运行时间',result)
+    return wrapper
+
+@times
+def add(x,y):
+    time.sleep(0.123)
+    print('hshshshshsh',x+y)
+
+add(4,6)
+print(add.__name__)
+------------------------------------------------------------------
+输出：
+hshshshshsh 10
+运行时间 0.12308788299560547
+add
+```
+
+### 偏函数：
+
+`functools.partial`的作用就是，把一个函数的某些参数给固定住（也就是设置默认值），返回一个新的函数，调用这个新函数会更简单。
+
+```python
+>>> import functools
+>>> int2 = functools.partial(int,base=2)
+>>> int2('100000')
+32
+```
+
+当函数的参数个数太多，需要简化时，使用`functools.partial`可以创建一个新的函数，这个新函数可以固定住原函数的部分参数，从而在调用时更简单。
+
+## 包与模块：
+
+为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在**Python中，一个.py文件就称之为一个模块（Module）。**
+
+自己创建模块时要注意命名，不能和Python自带的模块名称冲突。例如，系统自带了sys模块，自己的模块就不可命名为sys.py，否则将无法导入系统自带的sys模块。
+
+模块使编写代码不必从零开始。
+
+模块代码的**第一个字符串都被视为模块的文档注释**；
+
+**为了避免模块名冲突，**Python又引入了按目录来组织模块的方法，称为包（Package）。
+
+每个包下面必须有一个`__init__.py` 文件，否则Python会把它当做普通目录，而不会当作包。
+
+### 模块搜索路径：
+
+当试图加载一个模块时，Python会在指定的路径下搜索对应的.py文件，如果找不到，就会报错。
+
+默认情况下，Python解释器会搜索当前目录、所有已安装的内置模块和第三方模块，搜索路径存放在`sys`模块的`path`变量中。
+
+**添加自己的搜索目录**
+
+在sys.path中直接添加
+
+```python
+import sys
+sys.path.append('yourpath')
+```
+
+或者设置环境变量，该环境变量的内容会被自动添加到模块搜索路径中。
+
 ## 异常：
+
+
+
+## global与nonlocal
+
+**global引用全局变量**，函数内部可以修改该变量，修改后函数外部全局变量的值不变
+
+不使用global函数内部只能引用不能修改
+
+```python
+NUM = 1
+def f():
+   global NUM
+   NUM += 1
+   print(NUM)
+print('NUM',NUM)
+f()
+---------------------------------------------------------------------------------
+输出：
+NUM 1
+2
+```
+
+**nonlocal引用局部变量**，和global类似
+
+```python
+def f():
+    n = 0
+    def count():
+        nonlocal n
+        n += 1
+        return n
+    print('f的局部变量n:',n)
+    return count
+
+a = f()
+print('结果',a())
+----------------------------------------------------------------------
+输出：
+f的局部变量n: 0
+结果 1
+```
+
+
 
 ## Python2.x与Python3.x
 
