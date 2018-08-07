@@ -611,7 +611,25 @@ True
 
 总是优先使用isinstance()判断类型，可以将指定类型及其子类“一网打尽”。
 
-type只能判断出一个对象的所属类型。
+**type()**
+
+`type()`函数可以查看一个类型或变量的类型，只能判断出一个对象的所属类型。
+
+type函数既可以返回一个对象的类型，又可以创建出新的类型。
+
+```python
+>>> def hello(self,name='world'):
+...     print('Hello,%s'%name)
+...
+>>> Hello = type('Hello',(object,),dict(hello=hello))
+>>> h = Hello()
+>>> h.hello()
+Hello,world
+>>> type(Hello)
+<class 'type'>
+>>> type(h)
+<class '__main__.Hello'>
+```
 
 **enumerate():**
 
@@ -1088,11 +1106,11 @@ f的局部变量n: 0
 
 ## Python2.x与Python3.x
 
-| 不同点  | Python2.x | Python3.x |
-| ---- | --------- | --------- |
-|      |           |           |
-|      |           |           |
-|      |           |           |
+| 不同点               | Python2.x | Python3.x |
+| ----------------- | --------- | --------- |
+| range 与 xrange    |           |           |
+| items 与 iteritems |           |           |
+|                   |           |           |
 
 
 
