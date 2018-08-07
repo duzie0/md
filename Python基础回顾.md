@@ -478,7 +478,7 @@ a = 1  b = 2  c = 3  city = nanjing  kwargs = {'job': 'waiter', 'hobby': 'music'
 
 ## Python 内置函数
 
-**编码：**
+#### **编码：**
 
 Python的字符串类型是`str`，在内存中以Unicode表示，一个字符对应若干个字节。如果要在网络上传输，或者保存到磁盘上，就需要把`str`变为以字节为单位的`bytes`。
 
@@ -526,7 +526,7 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 >>>x = b'ABC'
 ```
 
-**len()函数：**
+#### **len()函数：**
 
 计算str中包含多少字符：
 
@@ -565,13 +565,13 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 4
 ```
 
-**input()函数：**
+#### **input()函数：**
 
 input()函数会阻塞程序。
 
 input()返回的数据类型是str。
 
-**range()函数：**
+#### **range()函数：**
 
 `range(5)` 生成整数数列0,1,2,3,4，不包括5。
 
@@ -579,7 +579,7 @@ input()返回的数据类型是str。
 
 `range(0,5,2)`0,2,4，第三个参数是步长
 
-**isinstance():** 
+#### **isinstance():** 
 
 ```python
 >>> isinstance('aaa',(int,str))
@@ -611,7 +611,7 @@ True
 
 总是优先使用isinstance()判断类型，可以将指定类型及其子类“一网打尽”。
 
-**type()**
+#### **type()**
 
 `type()`函数可以查看一个类型或变量的类型，只能判断出一个对象的所属类型。
 
@@ -631,7 +631,7 @@ Hello,world
 <class '__main__.Hello'>
 ```
 
-**enumerate():**
+#### **enumerate():**
 
 ```python
 >>> L
@@ -645,6 +645,16 @@ Hello,world
 3 4
 4 5
 ```
+
+#### open()
+
+`>>> f = open('/Users/michael/gbk.txt', 'r', encoding='gbk', errors='ignore')`
+
+参数一次是：路径、方式、编码、忽略错误
+
+写文件会直接覆盖原文件。可以使用追加。
+
+在Python中，文件读写是通过`open()`函数打开的文件对象完成的。使用`with`语句操作文件IO是个好习惯。
 
 ## Python高级功能
 
@@ -1060,7 +1070,224 @@ sys.path.append('yourpath')
 
 ## 异常：
 
+`try...except...finally...`
 
+当某些代码可能会出错时，就可以用`try`来运行这段代码，如果执行出错，则后续代码不会继续执行，而是直接跳转至错误处理代码，即`except`语句块，执行完`except`后，如果有`finally`语句块，则执行`finally`语句块，至此，执行完毕。
+
+可以有多个`except`来捕获不同类型的错误。
+
+此外，如果没有错误发生，可以在`except`语句后加一个`else`，当没有错误发生时，会自动执行`else`语句。
+
+`try...except`捕获错误还有一个巨大的好处，就是可以跨越多层调用。
+
+### 错误处理：
+
+print()，打印变量信息
+
+#### 断言：
+
+凡是用`print()`来辅助查看的地方，都可以用断言（assert）来替代。
+
+`assert n != 0, 'n is zero!'`
+
+`assert`的意思是，表达式`n != 0`应该是`True`，否则，根据程序运行的逻辑，后面的代码肯定会出错。
+
+如果断言失败，`assert`语句本身就会抛出`AssertionError` 'n is zero!'
+
+启动Python解释器是使用`-0` 参数，所有的断言会当做pass处理。
+
+#### logging:
+
+把`print()`替换为`logging`是第3种方式，和`assert`比，`logging`不会抛出错误，而且可以输出到文件
+
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+s = '0'
+n = int(s)
+logging.info('n=%d'%n)
+print(10/n)
+```
+
+logging允许指定记录信息的级别，有`debug`，`info`，`warning`，`error`等几个级别，当我们指定`level=INFO`时，`logging.debug`就不起作用了。同理，指定`level=WARNING`后，`debug`和`info`就不起作用了。这样一来，可以放心地输出不同级别的信息，也不用删除，最后统一控制输出哪个级别的信息。
+
+#### pdb
+
+Python的pdb可以单步方式执行代码。
+
+```python
+PS F:\aaaa> python -m pdb err.py
+> f:\aaaa\err.py(1)<module>()
+-> s = '0'
+(Pdb) l		#l显示所有代码
+  1  -> s = '0'
+  2     n = int(s)
+  3     a = 10/n
+  4     print(a)
+[EOF]
+(Pdb) n 		#n 单步执行
+> f:\aaaa\err.py(2)<module>()
+-> n = int(s) #定位到的下一步要执行的代码
+(Pdb) p s #p查看变量
+'0'
+(Pdb) n
+> f:\aaaa\err.py(3)<module>()
+-> a = 10/n
+(Pdb) n
+ZeroDivisionError: division by zero
+> f:\aaaa\err.py(3)<module>()
+-> a = 10/n
+(Pdb) q  #q 退出
+```
+
+### pdb.set_trace()，设置断点
+
+在要测试的地方设置断点。
+
+```python
+import pdb
+s = '0'
+n = int(s)
+pdb.set_trace()
+a = 10/n
+print(a)
+```
+
+程序执行到`pdb.set_trace()` 会自动跳转到pdb调试模式：
+
+```python
+> f:\pythonpractice\untitled1\断点.py(6)<module>()
+-> a = 10/n
+(Pdb) n
+ZeroDivisionError: division by zero
+> f:\pythonpractice\untitled1\断点.py(6)<module>()
+-> a = 10/n
+```
+
+使用IDE
+
+### 单元测试：
+
+编写单元测试时，我们需要编写一个测试类，从`unittest.TestCase`继承。
+
+以`test`开头的方法就是测试方法，不以`test`开头的方法不被认为是测试方法，测试的时候不会被执行。
+
+`unittest.TestCase`提供最常用的断言就是`assertEqual()`
+
+另一种重要的断言就是期待抛出指定类型的Error,`assertRaises()`
+
+```python
+import unittest
+class Student(object):
+    def __init__(self,name,score):
+        self.name = name
+        self.score = score
+    def get_grade(self):
+        if self.score >= 60:
+            return 'B'
+        if self.score >= 80:
+            return 'A'
+        return 'C'
+class TestStudent(unittest.TestCase):
+    def test_80_100(self):
+        liu = Student('liu', 85)
+        zhang = Student('zhang', 100)
+        self.assertEqual(liu.get_grade(),'A')
+        self.assertEqual(zhang.get_grade(), 'A')
+    def test_60_80(self):
+        liu = Student('liu', 60)
+        zhang = Student('zhang', 79)
+        self.assertEqual(liu.get_grade(), 'B')
+        self.assertEqual(zhang.get_grade(), 'B')
+    def test_0_60(self):
+        liu = Student('liu', 0)
+        zhang = Student('zhang', 59)
+        self.assertEqual(liu.get_grade(), 'C')
+        self.assertEqual(zhang.get_grade(), 'C')
+    def test_invailid(self):
+        liu = Student('liu',-1)
+        zhang = Student('zhang',101)
+        with self.assertRaises(ValueError):
+            liu.get_grade()
+        with self.assertRaises(ValueError):
+            zhang.get_grade()
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+```python
+..FF
+======================================================================
+FAIL: test_80_100 (__main__.TestStudent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "F:/PythonPractice/untitled1/单元测试.py", line 16, in test_80_100
+    self.assertEqual(liu.get_grade(),'A')
+AssertionError: 'B' != 'A'
+- B
++ A
+
+
+======================================================================
+FAIL: test_invailid (__main__.TestStudent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "F:/PythonPractice/untitled1/单元测试.py", line 32, in test_invailid
+    liu.get_grade()
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+FAILED (failures=2)
+```
+
+#### setUp与tearDown
+
+可以在单元测试中编写两个特殊的`setUp()`和`tearDown()`方法。这两个方法会分别在每调用一个测试方法的前后分别被执行。
+
+可以在`setUp()`方法中连接数据库，在`tearDown()`方法中关闭数据库，这样，不必在每个测试方法中重复相同的代码。
+
+### 文档测试：
+
+Python内置的“文档测试”（doctest）模块可以直接提取注释中的代码并执行测试。
+
+`    import doctest`    
+
+`doctest.testmod()`
+
+```python
+class Student(object):
+    '''
+    >>> s = Student('Lisi',20)
+    >>> s.show()
+    Lisi20 岁。
+    '''
+    def __init__(self,name,age):
+        self.name = name
+        self.age = age
+    def show(self):
+        print('%s%s岁。'%(self.name,self.age))
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+```
+
+```python
+Testing started at 16:28 ...
+
+Failure
+**********************************************************************
+File "F:/PythonPractice/untitled1/wendangceshi.py", line 4, in wendangceshi.Student
+Failed example:
+    s.show()
+Expected:
+    Lisi20 岁。
+Got:
+    Lisi20岁。
+```
 
 ## global与nonlocal
 
