@@ -58,7 +58,49 @@ b不再开辟新的内存空间
 
 ## String操作：
 
+### Python字符串运算符
 
+| 操作符    | 描述                            |
+| ------ | ----------------------------- |
+| +      | 字符串连接                         |
+| *      | 重复输出字符串                       |
+| []     | 通过索引获取字符串中字符                  |
+| [:]    | 截取字符串中的一部分，切片                 |
+| in     | 成员运算符 - 如果字符串中包含给定的字符返回 True  |
+| not in | 成员运算符 - 如果字符串中不包含给定的字符返回 True |
+| %      | 格式字符串                         |
+
+### Python 的字符串内建函数
+
+| 函数                   | 描述                                       |
+| -------------------- | ---------------------------------------- |
+| encode               | 以 encode 指定的编码格式编码字符串                    |
+| decode               | 以 decode指定的编码格式解码二进制数据                   |
+| len(string)          | 返回字符串长度                                  |
+| join(seq)            | 以指定字符串作为分隔符，将 seq 中所有的元素(的字符串表示)合并为一个新的字符串 |
+| replace(old,new,max) | 把 将字符串中的 str1 替换成 str2,如果 max 指定，则替换不超过 max 次。 |
+| split(str,num)       | str分隔符，num分割次数                           |
+| splitlines()         | 按照行('\r', '\r\n', \n')分隔，返回一个包含各行作为元素的列表 |
+| strip()              | 在字符串上执行 lstrip()和 rstrip()               |
+| lstrip()             | 删除字符串字符串开头的空格                            |
+| rstrip()             | 删除字符串字符串末尾的空格                            |
+| find(str,beg,end)    | 检测 str 是否包含在字符串中，如果指定范围 beg 和 end ，则检查是否包含在指定范围内，如果包含返回开始的索引值，否则返回-1 |
+| rfind(str,beg,end)   | 类似于 find()函数，不过是从右边开始查找.                 |
+| endwith(obj,beg,end) | 检查字符串是否以 obj 结束，如果beg 或者 end 指定则检查指定的范围内是否以 obj 结束，如果是，返回 True,否则返回 False |
+| upper()              | 转换字符串中所有小写字符为大写.                         |
+| lower()              | 转换字符串中所有大写字符为小写                          |
+| index(str,beg,end)   | 跟find()方法一样，只不过如果str不在字符串中会报一个异常         |
+| count(str,beg,end)   | 返回 str 在 string 里面出现的次数，如果 beg 或者 end 指定则返回指定范围内 str 出现的次数 |
+| capitalize()         | 将字符串的第一个字符转换为大写                          |
+| title()              | 每个单词都大写                                  |
+| isdecimal()          | 检查字符串是否只包含十进制字符，如果是返回 true，否则返回 false。   |
+| maketrans()          | 创建字符映射的转换表，对于接受两个参数的最简单的调用方式，第一个参数是字符串，表示需要转换的字符，第二个参数也是字符串表示转换的目标。 |
+| translate(table,del) | 根据参数table给出的表(包含 256 个字符)转换字符串的字符,要过滤掉的字符放到 **deletechars** 参数中。 |
+| isalpha()            | 如果字符串至少有一个字符并且所有字符都是字母则返回 True, 否则返回 False |
+| isalnum()            | 如果字符串至少有一个字符并且所有字符都是字母或数字则返 回 True,否则返回 False |
+| isdigit()            | 如果字符串只包含数字则返回 True 否则返回 False..          |
+| isnumeric()          | 如果字符串中只包含数字字符，则返回 True，否则返回 False        |
+| isspace()            | 如果字符串中只包含空白，则返回 True，否则返回 False.         |
 
 ## List,Tuple,Dict,Set
 
@@ -113,6 +155,28 @@ list是一个可变的有序表
 ['Michael', 'Sarah', 'Tracy']
 ```
 
+list表达式:
+
+`+`  [1,2,3] + [4,5,6]	结果：[1,2,3,4,5,6]		起连接作用
+
+`*` [1] * 3			结果：[1,1,1]				重复
+
+list方法：
+
+| 方法                                       | 作用                                |
+| ---------------------------------------- | --------------------------------- |
+| list.append(obj)                         | 在列表末尾添加新的对象                       |
+| list.count(obj)                          | 统计某个元素在列表中出现的次数                   |
+| list.extend(seq)                         | 在列表末尾一次性追加另一个序列中的多个值（用新列表扩展原来的列表） |
+| list.index(obj)                          | 从列表中找出某个值第一个匹配项的索引位置              |
+| list.insert(index,obj)                   | 将对象插入列表指定位置                       |
+| list.pop(index=-1)                       | 移除列表中的一个元素（默认最后一个元素），并且返回该元素的值    |
+| list.remove(obj)                         | 移除列表中某个值的第一个匹配项                   |
+| list.reverse()                           | 反向列表中元素                           |
+| list.sort(cmp=None, key=None, reverse=False) | 对原列表进行排序                          |
+| list.clear()                             | 清空列表                              |
+| list.copy()                              | 拷贝列表（浅拷贝）                         |
+
 ### Tuple:元组
 
 tuple一旦初始化就不能修改,，是不可变的有序表
@@ -134,6 +198,10 @@ tuple一旦初始化就不能修改,，是不可变的有序表
 >>>t
 (1,)
 ```
+
+可以使用`+` 连接两个元组创建新的元组
+
+也可以使用`*` 实现重复创建一个新元组
 
 ### Dict:字典
 
@@ -1333,13 +1401,19 @@ f的局部变量n: 0
 
 ## Python2.x与Python3.x
 
-| 不同点               | Python2.x | Python3.x |
-| ----------------- | --------- | --------- |
-| range 与 xrange    |           |           |
-| items 与 iteritems |           |           |
-|                   |           |           |
-
-
+| 不同点               | Python2.x                                | Python3.x                                |
+| ----------------- | ---------------------------------------- | ---------------------------------------- |
+| range 与 xrange    | range()创建一个列表，xrange()创建一个迭代器            | 只有range                                  |
+| items 与 iteritems | items以列表返回可遍历的(键, 值) 元组数组，iteritems返回迭代器 | 废弃iteritems                              |
+| print 与 print()   | print 'Hello World!'                     | print('Hello World!')                    |
+| 用户输入              | input得到的是int型，raw_input得到的是str           | input得到的str                              |
+| 整除                | `/` 带上小数点表示真除，否则是取整                      | `/` 真除                                   |
+| 字符串               | 以 8-bit 字符串存储                            | 以 16-bit Unicode 字符串存储                   |
+| try except        | except Exception,e                       | except Exception as e                    |
+| 打开文件              | file() 或者open()                          | 只能用open()                                |
+| 八进制字面量表示          |                                          | 八进制数必须写成0o777，原来的形式0777不能用了, 二进制必须写成0b111。 |
+| 不等于               | !=   和   <>                              | 只有 !=                                    |
+| 数据类型              |                                          | 去除了long类型，现在只有一种整型——int, 新增了bytes类型      |
 
 ## 重点掌握：
 
