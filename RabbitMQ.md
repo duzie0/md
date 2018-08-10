@@ -46,4 +46,7 @@ AMQP，即**Advanced Message Queuing Protocol，高级消息队列协议**，是
 
 注册为系统服务： `sudo chkconfig rabbitmq-server on`
 
-启动RabbitMQ Server ：
+启动RabbitMQ Server 
+
+https://www.cnblogs.com/liuchuanfeng/p/6813205.html
+
