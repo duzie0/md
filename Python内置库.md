@@ -21,7 +21,7 @@ os.path.abspath('path')
 os.path.join('path','path')
 os.path.split('path')
 os.path.splittext('path')
-
+os.path.exists('path')
 ```
 
 `shutil`模块提供了`copyfile()`的函数，可以看做是`os`模块的补充。
