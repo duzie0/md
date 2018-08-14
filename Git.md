@@ -87,3 +87,6 @@ clone仓库：`git clone <url>` `git clone github@github.com:duzie0/md.git`
 第二步是用`git commit`提交更改，实际上就是把暂存区的所有内容提交到当前分支。
 
 创建Git版本库时，Git自动创建了唯一一个`master`分支，所以，`git commit`就是往`master`分支上提交更改。
+
+## 分支：
+
