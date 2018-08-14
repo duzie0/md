@@ -49,7 +49,11 @@
 - 进入这目录使用`git init` 命令初始化本地库
 - `git add <filename>` 把文件添加到仓库
 - `git commit -m "<infomation>"` 把文件提交到仓库
+
+## 本地库关联到远程库：
+
 - 关联本地库到远程库：`git remote add origin git@github.com:duzie0/myPro.git`
+- 将本地库推送到远程库：`git push -u origin master`master主分支
 
 ## 常用命令：
 
@@ -62,6 +66,8 @@
 clone仓库：`git clone <url>` `git clone github@github.com:duzie0/md.git` 
 
 会在当前目录clone下创建一个名为 “md” 的目录，并在这个目录下初始化一个 `.git` 文件夹，从远程仓库拉取下所有数据放入 `.git` 文件夹，然后从中读取最新版本的文件的拷贝。
+
+
 
 **版本回退**
 
@@ -90,3 +96,6 @@ clone仓库：`git clone <url>` `git clone github@github.com:duzie0/md.git`
 
 ## 分支：
 
+`git branch <子分支名字>` 创建子分支
+
+`git checkout <子分支名字>` 切换到子分支
