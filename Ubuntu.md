@@ -34,8 +34,6 @@ mkdir :
 
 `cd ..` 回到上一级目录
 
-
-
 ## 权限问题
 
 ## 系统用户
@@ -49,6 +47,12 @@ mkdir :
 ## 防火墙
 
 ## 进程管理
+
+## 其他命令
+
+`echo 'print("hi!")' > hi.py `创建
+
+`echo 'print("Hello World!")' >> hi.py` 追加
 
 ## 常用应用
 

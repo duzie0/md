@@ -1,3 +1,5 @@
+
+
 # Python基础回顾
 
 ## Python数据类型：
@@ -102,6 +104,12 @@ b不再开辟新的内存空间
 | isnumeric()          | 如果字符串中只包含数字字符，则返回 True，否则返回 False        |
 | isspace()            | 如果字符串中只包含空白，则返回 True，否则返回 False.         |
 
+## bool:
+
+any():有一个为真返回真
+
+all():所有为真才返回真
+
 ## List,Tuple,Dict,Set
 
 ### List:列表
@@ -176,6 +184,21 @@ list方法：
 | list.sort(cmp=None, key=None, reverse=False) | 对原列表进行排序                          |
 | list.clear()                             | 清空列表                              |
 | list.copy()                              | 拷贝列表（浅拷贝）                         |
+
+**Counter()**
+
+```python
+from collections import Counter
+Counter('aasdfdgfdddfd')
+Counter([1,1,1,1,3,45,55,5,5])
+```
+
+输出：统计出现的次数
+
+````python
+Counter({'d': 6, 'f': 3, 'a': 2, 's': 1, 'g': 1})
+Counter({1: 4, 5: 2, 3: 1, 45: 1, 55: 1})
+````
 
 ### Tuple:元组
 
@@ -440,6 +463,21 @@ Python函数在定义的时候，默认参数`L`的值就被计算出来了，�
 
 **默认参数必须指向不变对象！**
 
+与此相似的：
+
+```python
+def change(l):
+    l += [1,2]
+    l = [5,6]
+l = [3,7,8]
+change(l)
+print(l)
+--------------------------------------
+[3,7,8,1,2]
+```
+
+
+
 **优化：**
 
 ```python
@@ -450,7 +488,7 @@ def add_end(L=None):
     return L
 ```
 
-#### 可变参数:
+#### 可变参数:不定长参数
 
 可变参数就是传入的参数个数是可变的。
 
@@ -724,6 +762,93 @@ Hello,world
 
 在Python中，文件读写是通过`open()`函数打开的文件对象完成的。使用`with`语句操作文件IO是个好习惯。
 
+#### **round()** 
+
+方法返回浮点数x的四舍五入值。
+
+慎用round().
+
+第二个参数不写默认保存到个位。
+
+```python
+print "round(80.23456, 2) : ", round(80.23456, 2)
+```
+
+```
+round(80.23456, 2) :  80.23
+```
+
+```python
+>>> round(2.355,2)
+2.35
+```
+
+该函数对于返回的浮点数并不是按照四舍五入的规则来计算，而会收到计算机表示精度的影响。
+
+```python
+#python3
+>>> i = 1.235
+>>> i = '%.2f'%i
+>>> i
+'1.24'
+>>> i = 2.355
+>>> i = '%.2f'%i
+>>> i
+'2.35'
+#占位符也是同样的问题。
+```
+
+使用decimal模块：
+
+```python
+>>> from decimal import Decimal
+>>> a = Decimal('2.355').quantize(Decimal('0.00'))
+>>> a
+Decimal('2.36')
+>>> float(a)
+2.36
+
+```
+
+#### sorted():
+
+```python
+>>> L=[1,3,4,5]
+>>> sorted(L,reverse=True)
+[5, 4, 3, 2, 1]           #这里sorted函数创建了一个新的列表
+>>> L			          #此时L并没有改变		  
+[1, 2, 3, 4, 5]
+>>> L = sorted(L,reverse=True)
+>>> L
+[5, 4, 3, 2, 1]
+```
+
+可以使用参数key
+
+**按值排序：**
+
+```python
+>>> dict1 = {'a':1,'b':10,'c':3}
+>>> sorted(dict1.items(),key=lambda x:x[1],reverse=True)
+[('b', 10), ('c', 3), ('a', 1)]
+------------------------------------------------------------------------
+>>> dict1 = {'a':1,'b':10,'c':3}
+>>> dict1 = dict(sorted(dict1.items(),key=lambda x:x[1],reverse=True))
+>>> dict1
+{'b': 10, 'c': 3, 'a': 1}
+```
+
+**按键排序：**
+
+```python
+dict1 = {'a':1,'e':10,'c':3}
+dict1 = dict(sorted(dict1.items(),key=lambda x:x[0],reverse=True))
+>>> dict1
+{'e': 10, 'c': 3, 'a': 1}
+```
+
+
+
 ## Python高级功能
 
 ### 切片：
@@ -793,7 +918,7 @@ Python中，一边循环一边计算的机制，称为生成器：generator。
 
 **创建方式：**
 
-将列表生成式的`[]` 换成`()` 的到的即是一个生成器。
+**将列表生成式的`[]` 换成`()`** 的到的即是一个生成器。
 
 ```python
 >>> g = (i for i in range(10))
@@ -866,6 +991,8 @@ while True:
 返回值 done
 ```
 
+**使用range()**
+
 ### 迭代器：
 
 **迭代器都是可迭代对象** 
@@ -878,7 +1005,7 @@ while True:
 
 这些可以直接作用于`for`循环的对象统称为可迭代对象：`Iterable`。
 
-可以被`next()`函数调用并不断返回下一个值的对象称为迭器：`Iterator`。
+**可以被`next()`函数调用并不断返回下一个值的对象称为迭代器：**`Iterator`。
 
 使用`isinstance()`判断一个对象是否是`Iterable`对象。
 
@@ -1402,7 +1529,7 @@ f的局部变量n: 0
 ## Python2.x与Python3.x
 
 | 不同点               | Python2.x                                | Python3.x                                |
-| ----------------- | ---------------------------------------- | ---------------------------------------- |
+| :---------------- | ---------------------------------------- | ---------------------------------------- |
 | range 与 xrange    | range()创建一个列表，xrange()创建一个迭代器            | 只有range                                  |
 | items 与 iteritems | items以列表返回可遍历的(键, 值) 元组数组，iteritems返回迭代器 | 废弃iteritems                              |
 | print 与 print()   | print 'Hello World!'                     | print('Hello World!')                    |
@@ -1414,6 +1541,33 @@ f的局部变量n: 0
 | 八进制字面量表示          |                                          | 八进制数必须写成0o777，原来的形式0777不能用了, 二进制必须写成0b111。 |
 | 不等于               | !=   和   <>                              | 只有 !=                                    |
 | 数据类型              |                                          | 去除了long类型，现在只有一种整型——int, 新增了bytes类型      |
+| round()           | round(0.5)==>1.0 round(1.235,2)==>1.24   | round(0.5)==>0   round(1.235,2)==>1.24   |
+
+## 与或运算：
+
+使用位与和位或计算权限
+
+增加权限用位或，检查权限用位与
+
+8（1000）查询，4（100）增加，2（10）删除，1（1）编辑
+
+```python
+>>> rights = 0
+>>> rights |= 8
+>>> rights & 2
+0
+>>> rights
+8
+>>> rights |= 2
+>>> rights
+10
+>>> rights & 8
+8
+>>> rights & 2
+2
+>>> rights
+10
+```
 
 ## 重点掌握：
 

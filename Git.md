@@ -49,6 +49,7 @@
 - 进入这目录使用`git init` 命令初始化本地库
 - `git add <filename>` 把文件添加到仓库
 - `git commit -m "<infomation>"` 把文件提交到仓库
+- 关联本地库到远程库：`git remote add origin git@github.com:duzie0/myPro.git`
 
 ## 常用命令：
 
@@ -70,6 +71,12 @@ clone仓库：`git clone <url>` `git clone github@github.com:duzie0/md.git`
 - 回退上三个版本`git reset --hard HEAD^^^` 或者`git reset --hard HEAD~3`
 - 根据版本号`git reset --hard 1094a` 不必全完版本号
 - 查询所有操作过的命令 `git reflog`
+
+**git忽略文件**
+
+`echo '*.log' > .gitignore` 
+
+在本地库中创建`.gitignore` ,然后将需要忽略的文件添加到`.gitignore`
 
 ## 工作区与版本库：
 
