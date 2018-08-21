@@ -14,7 +14,7 @@ NoSql：不需要经过SQL层处理，性能高
 
 字符串 string 
 
-哈希	 hash
+哈希 hash
 
 列表 list
 

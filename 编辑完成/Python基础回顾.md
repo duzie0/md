@@ -798,7 +798,7 @@ round(80.23456, 2) :  80.23
 #占位符也是同样的问题。
 ```
 
-使用decimal模块：
+**使用decimal模块：**
 
 ```python
 >>> from decimal import Decimal
@@ -1524,7 +1524,48 @@ f的局部变量n: 0
 结果 1
 ```
 
+## with上下文：
 
+```python
+class Foo(object):
+    def __init__(self):
+        print('实例化一个对象')
+    def __enter__(self):
+        print('进入')
+        #return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('退出')
+        #return True
+obj = Foo()
+with obj:
+    print('正在执行')
+```
+
+输出：
+
+```python
+实例化一个对象
+进入
+正在执行
+退出
+```
+
+**含有`__enter__`和`__exit__`方法的对象就是上下文管理器**
+
+```python
+with <上下文管理器>:
+    <语句体>
+```
+
+当with遇到上下文管理器，就会在执行语句体之前，先执行上下文管理器的`__enter__`方法，然后再执行语句体，执行完语句体后，最后执行`__exit__`方法。
+
+with语句类似try...except...finally的功能。
+
+**出现异常时，如果` __exit__ `返回 False（默认不写返回值时，即为False），则会重新抛出异常，让with 之外的语句逻辑来处理异常，这也是通用做法；如果返回 True，则忽略异常，不再对异常进行处理**
+
+with语句更加简洁，安全，代码量少。
+
+调用上下文管理器的` __enter__ `方法时；如果**使用了 as 子句**，则将 `__enter__() `方法的返回值赋值给 as 子句中的目标。
 
 ## Python2.x与Python3.x
 

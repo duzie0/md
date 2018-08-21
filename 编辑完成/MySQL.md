@@ -476,7 +476,7 @@ limit x,num  从x的位置取出 num条数据
 
    max()   
 
-   select max(age) from user;ss
+   select max(age) from user;
 
 2. 最小值
 
@@ -488,7 +488,7 @@ limit x,num  从x的位置取出 num条数据
 
    count()
 
-   select count(*) from user
+   select count(*) from user;
 
 4. 平均值
 
